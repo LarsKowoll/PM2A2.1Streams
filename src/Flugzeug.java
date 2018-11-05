@@ -1,5 +1,5 @@
 
-public class Flugzeug {
+public class Flugzeug implements Runnable {
 	private Flughafen _flughafen;
 	private String _id;
 	private int _flugdauer;
@@ -12,10 +12,33 @@ public class Flugzeug {
 		_id = id;
 		_flugdauer = flugdauer;
 		_startzeit = startzeit;
+		_status = Status.IM_FLUG;
 	}
 	
+	@Override
 	public void run() {
-		
+		int random = 0;
+		while (true) {
+			while ((random < 3) || (random > 8)) {
+				random = (int) (Math.random() * 10);
+			}
+			if (_flugdauer == random) {
+				_status = Status.IM_LANDEANFLUG;
+			}
+			
+			try {
+				Thread.sleep(1000);
+			} catch (InterruptedException e) {
+				// System.out.println("Thread Exception");
+			}
+			
+			_flugdauer++;
+		}
+	}
+	
+	public boolean istImLandeanflug()
+	{
+		return _status == Status.IM_LANDEANFLUG;
 	}
 	
 	public void istGelandet() {
@@ -23,7 +46,7 @@ public class Flugzeug {
 	}
 	
 	public String toString() {
-		return null;
+		return _id + " (Flugdauer: " + _flugdauer + "s)";
 	}
 	
 	public void setZeit(int neueZeit) {
