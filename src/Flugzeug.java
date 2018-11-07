@@ -18,7 +18,8 @@ public class Flugzeug implements Runnable {
 	@Override
 	public void run() {
 		int random = 0;
-		while (true) {
+		boolean gelandet = false;
+		while (!gelandet) {
 			while ((random < 3) || (random > 8)) {
 				random = (int) (Math.random() * 10);
 			}
@@ -29,13 +30,8 @@ public class Flugzeug implements Runnable {
 				_status = Status.IM_LANDEANFLUG;
 			}
 			
-			checkStatus();
-			
-			try {
-				Thread.sleep(1000);
-			} catch (InterruptedException e) {
-				// System.out.println("Thread Exception");
-			}			
+			gelandet = checkStatus();
+			Thread.yield();
 		}
 	}
 	
@@ -47,10 +43,15 @@ public class Flugzeug implements Runnable {
 		_status = status;
 	}
 	
-	private void checkStatus() {
+	private boolean checkStatus() {
 		if (_status == Status.IM_LANDEANFLUG) {
 			_flughafen.landen(this);
 		}
+		switch (_status) {
+			case IM_LANDEANFLUG: _flughafen.landen(this); break;
+			case GELANDET: return true;
+		}
+		return false;
 	}
 	
 	public String toString() {

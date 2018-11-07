@@ -1,4 +1,3 @@
-import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -8,14 +7,12 @@ public class Flughafen implements Runnable {
 	private List<Flugzeug> _flugzeuge;
 	private HashMap<Flugzeug, Thread> _threadMap;
 	private long _zeitInit;
-	private boolean _flugzeugGelandet;
 	
 	public Flughafen(int anzahlFlugzeuge) {
 		_anzahlFlugzeuge = anzahlFlugzeuge;
 		_zeitInit = System.currentTimeMillis();
 		_flugzeuge = new ArrayList<Flugzeug>();
 		_threadMap = new HashMap<Flugzeug, Thread>();
-		_flugzeugGelandet = false;
 	}
 	
 	public void landen(Flugzeug flugzeug) {
@@ -30,14 +27,22 @@ public class Flughafen implements Runnable {
 				
 				// Konsolenausgabe
 				System.out.println(flugzeug.toString() + " ist gelandet"); // + ";  Zeit: " + LocalTime.now().toString());
-				
-				_flugzeugGelandet = true;
+								
+				// neues Flugzeug starten
+				for (Flugzeug flugzeug2: _flugzeuge) {
+					if (flugzeug2.getStatus() == Status.GELANDET) {
+						starten(flugzeug2);
+						break;
+					}
+				}
 				
 				flugzeug.setStatus(Status.GELANDET);
 			}
 		} catch (NullPointerException e) {
 			
 		}
+		
+		
 	}
 
 	@Override
@@ -54,17 +59,6 @@ public class Flughafen implements Runnable {
 		while(true) {
 			for (Flugzeug flugzeug: _flugzeuge) {
 				flugzeug.setZeit(System.currentTimeMillis() - _zeitInit);
-			}
-			
-			if (_flugzeugGelandet) {
-				// neues Flugzeug starten
-				for (Flugzeug flugzeug: _flugzeuge) {
-					if (flugzeug.getStatus() == Status.GELANDET) {
-						starten(flugzeug);
-						_flugzeugGelandet = false;
-						break;
-					}
-				}
 			}
 			
 			try {
@@ -84,7 +78,7 @@ public class Flughafen implements Runnable {
 		flugzeugThread.start();
 
 		_threadMap.put(flugzeug, flugzeugThread);
-		
+				
 		// Konsolenausgabe
 		System.out.println(flugzeug.toString() + " ist gestartet"); // + "; Zeit: " + LocalTime.now().toString());
 	}
@@ -98,7 +92,7 @@ public class Flughafen implements Runnable {
 	}
 	
 	public static void main(String[] args) {
-		int anzahlFlugzeuge = 10;
+		int anzahlFlugzeuge = 4;
 		Thread flughafenThread = new Thread(new Flughafen(anzahlFlugzeuge));
 		flughafenThread.start();
 	}
