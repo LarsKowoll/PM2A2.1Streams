@@ -6,12 +6,17 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class A1<T> {
+	
+	String eingaben[] = { "Eingabe ", "Äußeres ", null, "Strassen-Feger", " ein Haus" };
+	
 	public static void main(String[] args) {
-		String eingaben[] = { "Eingabe ", "Äußeres ", null, "Strassen-Feger", " ein Haus" };	
-		veraendern(eingaben);
 	}
 	
-	public static List<String> veraendern(String[] eingaben) {
+	public A1() {
+		
+	}
+	
+	public List<T> veraendern(String[] eingaben) {
 		Stream<String> stringStream = Stream.of(eingaben);
 		List<String> myList = stringStream
 				.filter(x -> x!=null)
@@ -22,11 +27,11 @@ public class A1<T> {
 				.collect(Collectors.toList());
 
 		myList.forEach(System.out::println);
-		return myList;
+		return (List<T>) myList;
 		
 	}
 	
-	private static String kuerzenAufAcht(String str){
+	private String kuerzenAufAcht(String str){
         if(str.length() > 8){
             return str = str.substring(0,8);
         } 
