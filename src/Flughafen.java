@@ -2,19 +2,36 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+/**
+ * 
+ * @author Lars Kowoll, Philip Zirfaﬂ
+ * @version 11/2018
+ * 
+ */
+
 public class Flughafen implements Runnable {
 	private int _anzahlFlugzeuge;
 	private List<Flugzeug> _flugzeuge;
 	private HashMap<Flugzeug, Thread> _threadMap;
 	private long _zeitInit;
 	
+	/**
+	 * Konstruktor
+	 * 
+	 * @param anzahlFlugzeuge	Anzahl der Flugzeuge auf dem Flughafen
+	 */
 	public Flughafen(int anzahlFlugzeuge) {
 		_anzahlFlugzeuge = anzahlFlugzeuge;
-		_zeitInit = System.currentTimeMillis();
+		_zeitInit = System.currentTimeMillis(); // in Millisekunden
 		_flugzeuge = new ArrayList<Flugzeug>();
 		_threadMap = new HashMap<Flugzeug, Thread>();
 	}
 	
+	/**
+	 * Landet ein Flugzeug.
+	 * 
+	 * @param flugzeug		Flugzeug, das gelandet wird
+	 */
 	public void landen(Flugzeug flugzeug) {
 		try {
 			// Thread beenden
@@ -44,7 +61,10 @@ public class Flughafen implements Runnable {
 		
 		
 	}
-
+	
+	/**
+	 * Run-Methode des Flughafens
+	 */
 	@Override
 	public void run() {		
 		// Flugzeuge erstellen
@@ -57,6 +77,7 @@ public class Flughafen implements Runnable {
 		}
 		
 		while(true) {
+			// Zeit der Flugzeuge aktualisieren
 			for (Flugzeug flugzeug: _flugzeuge) {
 				flugzeug.setZeit(System.currentTimeMillis() - _zeitInit);
 			}
@@ -69,6 +90,11 @@ public class Flughafen implements Runnable {
 		}
 	}
 	
+	/**
+	 * Startet ein Flugzeug.
+	 * 
+	 * @param flugzeug		Flugzeug, das gestartet wird
+	 */
 	private void starten(Flugzeug flugzeug)
 	{
 		// Thread erstellen und starten
@@ -83,6 +109,9 @@ public class Flughafen implements Runnable {
 		System.out.println(flugzeug.toString() + " ist gestartet"); // + "; Zeit: " + LocalTime.now().toString());
 	}
 	
+	/**
+	 * Erzeugt ein neues Flugzeug.
+	 */
 	private void erzeugeFlugzeug() {
 		// Flugzeug erstellen
 		int number = _flugzeuge.size() + 1;
